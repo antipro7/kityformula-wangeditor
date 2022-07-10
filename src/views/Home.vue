@@ -18,19 +18,18 @@ export default {
     return {
       dbClickImgLatex: '',
       editor: null,
-      editorData: '',
+      editorData: ''
     }
   },
   mounted () {
     const editor = new WangEditor('#demo1')
     // editor.config.lineHeights = ['1', '1.15', '1.6', '2', '2.5', '3']
     const { PanelMenu, Panel } = WangEditor
-
     class Kityformula extends PanelMenu {
       // 公式输入插件
       constructor (editors) {
         const $elem = WangEditor.$(
-          `<div id="kityformulaKey" class="w-e-menu">公式</div>`
+          '<div id=\'kityformulaKey\' class=\'w-e-menu\'>公式</div>'
         )
         super($elem, editors)
       }
@@ -48,6 +47,7 @@ export default {
     // 注册菜单
     const kityformulaKey = 'kityformulaKey' // 菜单 key ，各个菜单不能重复
     editor.menus.extend('kityformulaKey', Kityformula)
+    editor.config.placeholder = ''
     // 将菜单加入到 editor.config.menus 中
     // 也可以通过配置 menus 调整菜单的顺序，参考【配置菜单】部分的文档
     editor.config.menus = editor.config.menus.concat(kityformulaKey)
@@ -68,32 +68,33 @@ export default {
     editor.create()
     this.editor = editor
   },
+  beforeDestroy () {
+    // 调用销毁 API 对当前编辑器实例进行销毁
+    this.editor.destroy()
+    this.editor = null
+  },
   methods: {
     getEditorData () {
       // 通过代码获取编辑器内容
       const data = this.editor.txt.html()
-      console.log('data', data);
+      console.log('data', data)
     },
-    dbclick(e) {
+    dbclick (e) {
       let { target } = e
       // 双击图片
       if (target.className === 'w-e-img-drag-mask') {
-        console.log('dbclick', this.dbClickImgLatex);
+        sessionStorage.setItem('Latex', this.dbClickImgLatex)
         // 触发菜单栏公式按钮点击事件，打开弹窗
         let target = this.editor.$toolbarElem.elems[0].querySelector('#kityformulaKey')
         target.click()
       }
     },
-    imgClick(e) {
+    // 点击图片获取，若是公式图片获取其公式内容
+    imgClick (e) {
       let { selector } = e
-      let latex = selector?.dataset?.latex
-      this.dbClickImgLatex =latex
-    },
-  },
-  beforeDestroy () {
-    // 调用销毁 API 对当前编辑器实例进行销毁
-    this.editor.destroy()
-    this.editor = null
+      let latex = selector?.dataset?.latex || ''
+      this.dbClickImgLatex = latex
+    }
   }
 }
 </script>

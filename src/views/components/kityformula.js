@@ -2,7 +2,6 @@ export default function (editor) {
   // panel 中需要用到的id
   const inputIFrameId = 'kityformula_' + Math.ceil(Math.random() * 10)
   const btnOkId = 'kityformula-btn' + Math.ceil(Math.random() * 10)
-
   const conf = {
     width: 900,
     height: 560,
